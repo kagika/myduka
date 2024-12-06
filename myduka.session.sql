@@ -1,0 +1,1 @@
+SELECT sales.id,products.name,sales.quantity,sales.created_at FROM products INNER JOIN sales ON products.id = sales.pid

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Products</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
+    </head>
+    <body>
+        <h1>Add a product</h1>
+      <form action = "/products" method = "post">
+          <label for="exampleInputEmail1" class="form-label">Name</label>
+          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name = "pname">
+        
+          <label for="exampleInputPassword1" class="form-label">Buying Price</leabel>
+          <input type="number" class="form-control" id="exampleInputPassword1" name = "bp">
+        
+            <label for="exampleInputPassword1" class="form-label">Selling Price</leabel>
+            <input type="number" class="form-control" id="exampleInputPassword1" name = "sp"> 
+          
+
+            <label for="exampleInputPassword1" class="form-label">Stock Quantity</leabel>
+            <input type="number" class="form-control" id="exampleInputPassword1" name = "sq">
+        
+     
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+
+        <table border="1" id = "myTable">
+           <thead>
+           <tr>
+            <th>id</th><th>Name</th><th>Buying Price</th><th>Selling Price</th> <th>Stock</th>
+           </tr>
+           </thead>
+           <tbody>
+            {% for p in prods %}
+            <tr>
+                <td>{{p[0]}}</td><td>{{p[1]}}</td><td>{{p[2]}}</td><td>{{p[3]}}</td><td>{{p[4]}}</td>
+            </tr>
+            {% endfor %}
+           </tbody>
+        </table>
+
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js" ></script>
+        <script>
+            let table = new DataTable('#myTable');
+        </script>
+    </body>
+</html>
