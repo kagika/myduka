@@ -1,6 +1,6 @@
-from flask import Flask, render_template,request
+from flask import Flask, render_template,request,redirect
 from products import fetch_products
-from products import cur,delete_products,new_product
+from products import cur,new_product,conn
 from datetime import datetime
 
 app = Flask(__name__)
@@ -26,20 +26,41 @@ def contact():
 @app.route("/products",methods=["GET","POST"])
 def products():
     if request.method == "GET":
-        cur.execute("SELECT * FROM products")    
-        return render_template("products.html", prods = cur.fetchall())
+        cur.execute("SELECT * FROM products order by id desc")    
+        prods = cur.fetchall()
+        print(prods)
+        return render_template("products.html",prods = prods)
     else:
-        name = request.form ["pname"]
-        buying_price = request.form["bp"]
-        selling_price = request.form["sp"]
-        stock_quantity = request.form["sq"]
-        return "Product added!"        
+            name = request.form ["pname"]
+            buying_price = request.form["bp"]
+            selling_price = request.form["sp"]
+            stock_quantity = request.form["sq"]
+            if selling_price > buying_price:
+                new_product(name,buying_price,selling_price,stock_quantity)
+                return redirect("/products")
+            else:
+                return "A loss will be realised and cannot be put into the database"
+            
+        
                 
-@app.route("/sales")
+@app.route("/sales", methods = ["GET","POST"])
 def sales():
-    cur.execute("SELECT sales.id,products.name,sales.quantity,sales.created_at FROM products INNER JOIN sales ON products.id = sales.pid")
-    return render_template ("sales.html",sale = cur.fetchall())
+    if request.method == "POST":
+        product_id = request.form["pid"]
+        product_quantity = request.form["product_quantity"]
+        print(product_id,product_quantity)
+        query = f"INSERT INTO sales (pid,quantity,created_at) VALUES ({product_id},{product_quantity},now())"
+        cur.execute(query)
+        conn.commit()
+        return redirect("/sales")
+    else:
+        cur.execute("select * from products")
+        products = cur.fetchall()
+        cur.execute("SELECT sales.id,products.name,sales.quantity,sales.created_at FROM products INNER JOIN sales ON products.id = sales.pid")
+        sale = cur.fetchall()
+        return render_template ("sales.html",sales = sale,products = products )
     
+        
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -13,6 +13,27 @@
         <link rel="stylesheet" href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
     </head>
     <body>
+        <form action ="/sales" method = "post" >
+            <label>Product name</label>
+            <select name = "pid">
+                
+                {% for p in products %}
+                <option value= "{{p[0]}}">
+                    {{p[1]}}
+                </option>
+                {% endfor %}
+
+
+            </select>
+
+            <label>Quantity</label>
+            <input type = "number" name = "product_quantity">
+
+            <input type="submit" value= "Submit">
+
+        </form>
+
+
 
         <table border="1" id = "myTable">
            <thead>
@@ -21,7 +42,7 @@
            </tr>
            </thead>
            <tbody>
-            {% for s in sale %}
+            {% for s in sales %}
             <tr>
                 <td>{{s[0]}}</td><td>{{s[1]}}</td><td>{{s[2]}}</td><td>{{s[3] | strftime("%B %d,%Y")}}</td>
             </tr>
