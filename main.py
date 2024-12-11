@@ -35,12 +35,11 @@ def products():
             buying_price = request.form["bp"]
             selling_price = request.form["sp"]
             stock_quantity = request.form["sq"]
-            if selling_price > buying_price:
-                new_product(name,buying_price,selling_price,stock_quantity)
-                return redirect("/products")
+            if selling_price < buying_price:
+                pass
             else:
-                return "A loss will be realised and cannot be put into the database"
-            
+                new_product(name,buying_price,selling_price,stock_quantity)
+                redirect("/products")
         
                 
 @app.route("/sales", methods = ["GET","POST"])
@@ -60,7 +59,62 @@ def sales():
         sale = cur.fetchall()
         return render_template ("sales.html",sales = sale,products = products )
     
+@app.route("/dashboard")
+def dashboard():
+    sales_per_day_query = "SELECT SUM(products.selling_price * sales.quantity) as sales, sales.created_at FROM sales INNER JOIN products on sales.pid = products.id GROUP BY sales.created_at ORDER BY sales DESC;"
+    cur.execute(sales_per_day_query)
+    daily_sales = cur.fetchall()
+    x = []
+    y = []
+    for i in daily_sales:
+        x.append(i[1].strftime('%d %m %Y'))
+        y.append(int(i[0]))      
+    print(x)
+    print(y)
+    
+    return render_template("dashboard.html",x=x,y=y)
+
+@app.route("/dashboard2")
+def dashboard2():
+    query = "SELECT SUM(selling_price*quantity) AS total_sales, productS.name FROM products "\
+            "INNER JOIN sales ON sales.pid = products.id GROUP BY products.name ORDER BY total_sales DESC;"
+    cur.execute(query)
+    data = cur.fetchall()
+    cur.close()
+    conn.close()
+    x = [int(i[0]) for i in data]
+    y = [i[1] for i in data]
+    return render_template("dashboard2.html",x=x,y=y)
+
+
+@app.route("/login",methods = ["POST","GET"])
+def login():
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+        cur.execute(f"SELECT id FROM users WHERE email = '{email}'")
+        row = cur.fetchone()
+        if row == None:
+            return "Invalid credentials"
+    else:    
+        return render_template("login.html")
         
+        
+@app.route("/register",methods = ["POST","GET"])
+def register():
+    if request.method == "GET":
+        return render_template("register.html")
+    else:
+        email = request.form["email"]
+        password = request.form["password"]
+        query = "insert into users(email,password) values('{}','{}')".format(email,password)
+        cur.execute(query)
+        conn.commit()
+        return redirect("/dashboard")
+    
+
+
+# sales per product in a bar graph 
 
 if __name__ == "__main__":
     app.run(debug=True)

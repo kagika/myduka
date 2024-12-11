@@ -1,0 +1,20 @@
+{
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "max": 10,
+                "idleTimeoutMillis": 200,
+                "connectionTimeoutMillis": 300
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "myduka",
+            "database": "myduka",
+            "username": "postgres",
+            "password": "williammurage",
+            "connectionTimeout": 40
+        }
+    ]
+}
